@@ -35,7 +35,7 @@ contract FundMe {
 
         //mgs.sender - sender of the function call; msg.value - how much they sent
         addressToAmountFunded[msg.sender] += msg.value;
-        funders.push(msg.sender); //redundat if someone pushes multiple times. Ignore for now.
+        funders.push(msg.sender); //redundant if someone pushes multiple times. Ignore for now.
     }
 
     function getVersion() public view returns (uint256){
@@ -57,7 +57,7 @@ contract FundMe {
         //x, xxx.xxxxxxxx
     }
 
-    //weird function. The decimals confuse me.
+    //weird function. The decimals confuse me. Think I figured it out now!
     function getConversionRate(uint256 ethAmount) public view returns(uint256){
         uint256 ethPrice = getPrice();
         uint256 ethAmountUsd = (ethPrice * ethAmount) / 10**8;
