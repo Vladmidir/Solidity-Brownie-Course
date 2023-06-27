@@ -8,3 +8,4 @@ so that it can be easily referenced.
 This this the order in which I have build the files included in this folder
 1. SimpleStorage.sol
 2. StorageFactory.sol
+3. FundMe.sol
