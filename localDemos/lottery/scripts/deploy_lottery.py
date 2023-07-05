@@ -3,13 +3,18 @@ from brownie import Lottery, config, network
 import time
 
 REQUEST_CONFIRMATIONS = 3
-CALLBACK_GAS_LIMIT = 1000000000
+CALLBACK_GAS_LIMIT = (
+    300000  # WHAT DOES THIS DO?! I could not pass the tests because of this value set too high!!!!
+    # ANSWER: That is the maximum gas we are willing to spend.
+    # By best guess to why this breaks is that the number overflows uint32 if set too high.
+    # This is very strange considering the fact that 1 000 000 000 should fit within uint32.
+)
 NUM_WORDS = 1
 
 
 def deploy_lottery():
     account = get_account()
-    Lottery.deploy(
+    lottery = Lottery.deploy(
         get_contract("eth_usd_price_feed").address,
         get_contract(
             "vrf_wrapper"  # EDIT: Change from "vfr_coordinator" to "vrf_wrapper"
@@ -24,6 +29,7 @@ def deploy_lottery():
         # ANSWER: It sets the verify key either to what we have in config, or False otherwise.
     )
     print("Deployed lottery!")
+    return lottery
 
 
 def start_lottery():

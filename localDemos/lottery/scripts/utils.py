@@ -94,15 +94,14 @@ def deploy_mocks():
         1000000000,
         {"from": account},  # constructor(uint96 _baseFee, uint96 _gasPriceLink)
     )
-    ### TODO: Rewrite the contract deployment properly!
     aggregator = (
         MockV3Aggregator.deploy(  # constructor(uint8 _decimals, int256 _initialAnswer)
-            18, 3000000000000000, {"from": account}
+            8, 200000000000, {"from": account}
         )
     )
     link = LinkToken.deploy({"from": account})
     wrapper = VRFV2Wrapper.deploy(  # constructor(address _link, address _linkEthFeed, address _coordinator)
-        link, aggregator, coordinator, {"from": account}
+        link.address, aggregator.address, coordinator.address, {"from": account}
     )
 
     # configure the wrapper

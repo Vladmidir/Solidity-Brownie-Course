@@ -28,6 +28,8 @@ contract Lottery is Ownable, VRFV2WrapperConsumerBase {
     uint16 requestConfimations;
     uint32 callbackGasLimit;
     uint32 numWords;
+    //event to emmit when requesting random number
+    event requestedRandomness(uint256 requestId);
 
     //call the VRFV2WrapperConsumerBase (parent) constructor
     constructor(
@@ -58,15 +60,16 @@ contract Lottery is Ownable, VRFV2WrapperConsumerBase {
         //ANSWER: Looks like I can only cast Address to AddressPayable
     }
 
+    /**
+     * Entrance cost in Wei
+     */
     function getEntranceFee() public view returns (uint256) {
         //$ price for 1ETH, with 8 decimals
-        (, int256 price, , , ) = ethUsdPriceFeed.latestRoundData(); //would have to get these methods directly from the repo or documentation.
+        (, int256 price, , , ) = ethUsdPriceFeed.latestRoundData();
         uint256 adjustedPrice = uint256(price);
-        //5 000 000 000 000 000 000 / 185 551 851 240
-        //BUG: I get zero, because the  quotient < 0
-        //FIX: Add 8 extra zeroes to the entry fee.
-        uint256 costEnter = uint256(usdEntryFee * 10 ** 17) / adjustedPrice; //DIVIDE by the adjusted price
-        //The cost to enter in Gwei
+        //(50 000 000 000 000 000 000 / 185 551 851 240) * 10^8
+        uint256 costEnter = (uint256(usdEntryFee * 10 ** 18) / adjustedPrice) *
+            10 ** 8; // add 8 zeroes to compensate for the 8 zeroes of the adjustedPrice.
         return costEnter;
     }
 
@@ -102,27 +105,28 @@ contract Lottery is Ownable, VRFV2WrapperConsumerBase {
             requestConfimations,
             numWords
         );
+        //NOTE: Emmiting an event saves it in the transaction (like a print statement inside a transaction)
+        emit requestedRandomness(requestId);
     }
 
     //Overwriting the callback function of the VRF contract
-    //make sure to add the `override` keyword!
-    //QUESTION: What happens if I don't add `override`?
+    //QUESTION: What happens if I don't add `override`? ANSWER: Error happens
     function fulfillRandomWords(
-        uint256 _requestId,
+        uint256 _requestId, //EMMIT the requestId
         uint256[] memory _randomWords
     ) internal override {
         require(
             lottery_state == LOTTERY_STATE.CALCULATING_WINNER,
             "You aren't there yet!"
         );
-        require(_randomWords[_requestId] > 0, "random not found");
-
-        uint256 indexOfWinner = _randomWords[_requestId] % players.length;
+        require(_randomWords.length > 0, "random not found");
+        //Calculate the winner and transfer funds
+        uint256 indexOfWinner = _randomWords[0] % players.length;
         recentWinner = players[indexOfWinner];
         recentWinner.transfer(address(this).balance);
         //Reset
         players = new address payable[](0);
         lottery_state = LOTTERY_STATE.CLOSED;
-        recentRandom = _randomWords[_requestId];
+        recentRandom = _randomWords[0];
     }
 }
