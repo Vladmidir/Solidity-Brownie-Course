@@ -4,10 +4,9 @@
     - could potentially be fixed with DAOs or Chainlink Keepers.
 
 ### How do we test this?
-1. `mainnet-fork`# What is the difference between Alchemy and Infura? What is mainnet? What is fork?
-    A fork is the fork of the main (ETH) net.
-2. `development` with mocks (local machine)
-3. `testnet` (sepolia)
+1. `development` with mocks (local machine)
+2. `testnet` (sepolia)
+3. `mainnet-fork` (custom) # A fork is the fork of the main (ETH) net.
 
 
 ### Request - recieve data cycle:
