@@ -1,0 +1,29 @@
+dependencies:
+# - <organization/repo>@<version>
+  - smartcontractkit/chainlink@2.2.0 
+  - OpenZeppelin/openzeppelin-contracts@4.9.2
+compiler:
+  solc: # solc <= solidity compiler
+    remappings:
+      - "@chainlink=smartcontractkit/chainlink@2.2.0"
+      - "@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.9.2"
+dotenv: .env
+
+wallets:
+    from_key: ${PRIVATE_KEY}
+networks:
+  sepolia: 
+    eth_usd_price_feed: "0x694AA1769357215DE4FAC081bf1f309aDC325306"
+    explorer: https://api-sepolia.etherscan.io/
+    verify: True
+  mainnet-fork: 
+    eth_usd_price_feed: "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419"
+    verify: False
+live:
+- name: Ethereum
+  networks:
+  - name: sepolia
+    chainid: 11155111
+    id: sepolia
+    host: https://mainnet.infura.io/v3/91c6edf564e0401795b6cb547f05b9c8
+    explorer: https://api-sepolia.etherscan.io/

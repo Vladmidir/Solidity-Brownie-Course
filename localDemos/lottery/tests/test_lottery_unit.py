@@ -1,5 +1,3 @@
-# expect approx $50 == .027 eth
-
 from brownie import Lottery, accounts, config, network, exceptions
 from web3 import Web3
 from scripts.deploy_lottery import deploy_lottery
@@ -10,7 +8,6 @@ from scripts.utils import (
     get_contract,
 )
 import pytest
-import time
 
 
 def test_get_entrace_fee():
