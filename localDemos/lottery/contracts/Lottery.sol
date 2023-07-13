@@ -10,28 +10,28 @@ import "@chainlink/contracts/src/v0.8/vrf/VRFV2WrapperConsumerBase.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Lottery is Ownable, VRFV2WrapperConsumerBase {
-    //QUESTION: What is this payable array all about?
-    //ANSWER: It is an array of payable addresses.
     address payable[] public players;
     address payable public recentWinner;
     uint256 public recentRandom;
     uint256 public usdEntryFee;
+
     AggregatorV3Interface internal ethUsdPriceFeed;
+
+    //enum - user defined type that can be represented with INTs
     enum LOTTERY_STATE {
-        //enum - user defined type that can be represented with INTs
         OPEN,
         CLOSED,
         CALCULATING_WINNER
     }
     LOTTERY_STATE public lottery_state;
+
     //arguments for requestRandomness()
     uint16 requestConfimations;
     uint32 callbackGasLimit;
     uint32 numWords;
-    //event to emmit when requesting random number
+    //event to emit when requesting random number
     event requestedRandomness(uint256 requestId);
 
-    //call the VRFV2WrapperConsumerBase (parent) constructor
     constructor(
         address _priceFeedAddress,
         address _vrfWrapper,
@@ -40,6 +40,7 @@ contract Lottery is Ownable, VRFV2WrapperConsumerBase {
         uint32 _callbackGasLimit,
         uint32 _numWords
     ) VRFV2WrapperConsumerBase(_linkToken, _vrfWrapper) {
+        //call the VRFV2WrapperConsumerBase (parent) constructor
         usdEntryFee = 50;
         ethUsdPriceFeed = AggregatorV3Interface(_priceFeedAddress);
         lottery_state = LOTTERY_STATE.CLOSED; //since repsented by nums, could do lottery_state = 1;
@@ -48,6 +49,9 @@ contract Lottery is Ownable, VRFV2WrapperConsumerBase {
         numWords = _numWords;
     }
 
+    /**
+     * Enter the lottery
+     */
     function enter() public payable {
         require(lottery_state == LOTTERY_STATE.OPEN);
         //50$ minimum
@@ -73,6 +77,9 @@ contract Lottery is Ownable, VRFV2WrapperConsumerBase {
         return costEnter;
     }
 
+    /**
+     * Simple state change
+     */
     function startLottery() public onlyOwner {
         require(
             lottery_state == LOTTERY_STATE.CLOSED,
@@ -81,6 +88,9 @@ contract Lottery is Ownable, VRFV2WrapperConsumerBase {
         lottery_state = LOTTERY_STATE.OPEN;
     }
 
+    /**
+     *Request randomness
+     */
     function endLottery() public onlyOwner {
         //uint256(
         //    keccak256(
@@ -93,11 +103,11 @@ contract Lottery is Ownable, VRFV2WrapperConsumerBase {
         //    )
         //) % players.length;
         // ^ bad way of getting a random numeber.
+
         //#THE PROPER WAY:
         //We will get our random number from the Chainlink oracle.
         //For this we will have to pay some Chainlink gas (LINK token).
-        //We did not have to do this for the price oracle, because the 'sponsors' paid the gas fee for us.
-
+        //We did not have to do this for the price oracle, because the 'sponsors' paid the gas fee for us!
         lottery_state = LOTTERY_STATE.CALCULATING_WINNER;
         //Inherited function!
         uint256 requestId = requestRandomness(
@@ -105,14 +115,14 @@ contract Lottery is Ownable, VRFV2WrapperConsumerBase {
             requestConfimations,
             numWords
         );
-        //NOTE: Emmiting an event saves it in the transaction (like a print statement inside a transaction)
+        //NOTE: Emiting an event saves it in the transaction (like a print statement inside a transaction)
         emit requestedRandomness(requestId);
     }
 
     //Overwriting the callback function of the VRF contract
     //QUESTION: What happens if I don't add `override`? ANSWER: Error happens
     function fulfillRandomWords(
-        uint256 _requestId, //EMMIT the requestId
+        uint256 _requestId, //EMITED the requestId
         uint256[] memory _randomWords
     ) internal override {
         require(

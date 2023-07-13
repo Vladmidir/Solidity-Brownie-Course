@@ -21,7 +21,7 @@ This is the order in which I have built the projects included in this folder
 4. [FundMe.sol](./FundMe.sol)
 5. LocalDemos > [web3_py_simple_storage](./localDemos/web3_py_simple_storage/)
 6. LocalDemos > [brownie_simple_storage](./localDemos/brownie_simple_storage/)
-7. LocalDemos > [lottery](./localDemos/lottery/) (*upgraded to VRF V2*)
+7. LocalDemos > [lottery](https://github.com/Vladmidir/Lottery-Smart-Contract) (*upgraded to VRF V2*)
 8. LocalDemos > [brownie_fund_me](./localDemos/brownie_fund_me/) (yes, I did them in the wrong order 🤦‍♂️)
 9. LocalDemos> [erc20_brownie](./localDemos/erc20_brownie/)
 

@@ -77,8 +77,8 @@ def get_contract(contract_name):
 
 
 def deploy_mocks():
+    """Set up all the mock contracts required for local testing"""
     print("Deploying mocks...")
-    """Helper function for get_contract()"""
     account = get_account()
     # 1. Deploy the VRFCoordinatorV2Mock. This contract is a mock of the VRFCoordinatorV2 contract.
     # 2. Deploy the MockV3Aggregator contract.
