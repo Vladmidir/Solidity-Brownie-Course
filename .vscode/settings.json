@@ -3,5 +3,12 @@
         "editor.defaultFormatter": "ms-python.black-formatter"
     },
     "python.formatting.provider": "none",
-    "solidity.compileUsingRemoteVersion": "v0.6.4+commit.1dca32f3"
+    "solidity.compileUsingRemoteVersion": "v0.6.4+commit.1dca32f3",
+    "grammarly.selectors": [
+        {
+            "language": "markdown",
+            "scheme": "file",
+            "pattern": "README.MD"
+        }
+    ]
 }
